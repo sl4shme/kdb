@@ -12,9 +12,9 @@ Commands :
 ### new
 >new [path of file] [-t tag1,tag2] [-n name]
 
-**Ex :**
+**Ex :**  
 create a new note (will open an editor):
-> - kdb new -n "New note" 
+> - kdb new -n "New note"
 
 Import exising file (same result):
 > - kdb new plop.py -n "python basics" -t python,dev
@@ -23,7 +23,7 @@ Import exising file (same result):
 
 Import webpage:
 > - kdb new https://www.python.org/dev/peps/pep-0008/ -t python -n "pep8"
- 
+
 Import image:
 > - kdb new graph.jpeg -t graph,db
 
@@ -35,27 +35,27 @@ If no name specified, default to filename.
 ### edit
 >kdb edit [id] [-t tag1,tag2] [-n name]
 
-**Ex :**
+**Ex :**  
 Edit the "python basics" note (works only on type=text):
 > - kdb edit -n "python basics"
 > - kdb edit 1
 
 Edit the tags of "python basics" note:
 > - kdb edit -n "python basics" -t newtag1,newtag2
- 
+
  Edit the name of "python basics" note :
 > - kdb edit 1 -n "python basics : conditionals"
- 
+
 
 
 ### search
 -------
 >search [-i id] [-t tag1,tag2] [-n name] [-r] [-c creation_date] [-m modification_date] [-a access_date]
 
-**Ex :**
+**Ex :**  
 List all ressources tagged python:
 > - kdb search -t python
- 
+
 List all ressources with name containing python:
 > - kdb search python
 > - kdb search -r "/^python/"
