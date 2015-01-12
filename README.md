@@ -61,10 +61,10 @@ List all ressources with name containing python:
 > - kdb search -r "/^python/"
 
 List all ressources created on 2014 :
-> - kdb search -c **/**/2014
+> - kdb search -c \*\*/\*\*/2014
 
 List all ressources accessed less than 3 hours ago:
-> - kdb search -a 5H
+> - kdb search -a 3H
 
 
 
