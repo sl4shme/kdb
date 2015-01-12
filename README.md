@@ -111,13 +111,18 @@ Architecture:
 --------------
 
 The db is stored in a directory:
-> .kdb \-\-\- db.json
->       \|\- 1_python_basics
->       \|\- 2_sshd_config
->       \|\- 3_shematics.jpeg
->       \|\- 4_pep8 -- index.html
->                   \|\- style.css
->                   \|\- script.js
+<pre>
++-- _.kdb
+|   +-- config
+|   +-- db.json 
+|   +-- 1_python_basics
+|   +-- 2_sshd_config
+|   +-- 3_shematics.jpeg
+|   +-- 4_pep8
+|       +-- index.html 
+|       +-- style.css 
+|       +-- script.js 
+</pre>
 
 Each resource is composed of:
  - A file (or a folder in the case of a webpage)
