@@ -3,17 +3,14 @@
 
 What is it ?
 --------------
-KDB (Knowledge DataBase) is a lightweight simple solution to store, retrieve and manage knowledge.
-If one day you said to yourself : "I need to write this command somewhere" or "This configuration file could be usefull someday",
+KDB (Knowledge DataBase) is a lightweight simple solution to store, retrieve and manage knowledge.   
+If one day you said to yourself : "I need to write this command somewhere" or "This configuration file could be usefull someday".
 Then KDB is for you. 
 
 Commands :
 --------------
 
-
 ### new
--------
-
 >kdb new [path of file] [-t tag1,tag2] [-n name]
 
 **Ex :**  
@@ -32,12 +29,9 @@ Import image:
 > - kdb new graph.jpeg -t graph,db
 
 If no tags specified, user will be prompted.
-If no name specified, default to filename.
-
-
+If no name specified, default to filename.  
 
 ### edit
--------
 >kdb edit [id] [-t tag1,tag2] [-n name]
 
 **Ex :**  
@@ -49,12 +43,9 @@ Edit the tags of "python basics" resource:
 > - kdb edit -n "python basics" -t newtag1,newtag2
 
  Edit the name of "python basics" resource :
-> - kdb edit 1 -n "python basics : conditionals"
-
-
+> - kdb edit 1 -n "python basics : conditionals"  
 
 ### search
--------
 >kdb search [-i id] [-t tag1,tag2] [-n name] [-r] [-c creation_date] [-m modification_date] [-a access_date]
 
 **Ex :**  
@@ -69,12 +60,9 @@ List all resources created on 2014 :
 > - kdb search -c \*\*/\*\*/2014
 
 List all resources accessed less than 3 hours ago:
-> - kdb search -a 3H
-
-
+> - kdb search -a 3H  
 
 ### rm 
--------
 >kdb rm [-i id] [-t tag1,tag2] [-n name]
 
 **Ex :**  
@@ -85,30 +73,23 @@ Remove all resources tagged Python:
 > - kdb rm -t python
 
 Remove all resources piped from search command:
-> - kdb search -a 3h | kdb rm
-
-
+> - kdb search -a 3h | kdb rm  
 
 ### push
 >kdb push
 
 **Ex :**  
 Push your database on the configured Git repo:
-> - kdb push
-
-
+> - kdb push  
 
 ### pull
 >kdb pull
 
 **Ex :**   
 Pull your database from the configured Git repo:
-> - kdb pull
-
-
+> - kdb pull   
 
 ### export
--------
 >kdb export filename.tar.gz
 
 **Ex :**  
@@ -116,17 +97,14 @@ Export your database:
 > - kdb export backup.tar.gz
 
 Partial export:
-> - kdb search -t python | kdb export python.tar.gz
-
-
+> - kdb search -t python | kdb export python.tar.gz   
 
 ### import
--------
 >kdb import db.tar.gz
 
 **Ex :**   
 Import a database:
-> - kdb import backup.tar.gz
+> - kdb import backup.tar.gz  
 
 
 Architecture:
