@@ -92,7 +92,7 @@ Remove all resources piped from search command:
 ### push
 >kdb push
 
-**Ex :**
+**Ex :** 
 Push your database on the configured Git repo:
 > - kdb push
 
@@ -101,7 +101,7 @@ Push your database on the configured Git repo:
 ### pull
 >kdb pull
 
-**Ex :**
+**Ex :** 
 Pull your database from the configured Git repo:
 > - kdb pull
 
@@ -111,7 +111,7 @@ Pull your database from the configured Git repo:
 -------
 >kdb export filename.tar.gz
 
-**Ex :**
+**Ex :** 
 Export your database:
 > - kdb export backup.tar.gz
 
@@ -124,9 +124,24 @@ Partial export:
 -------
 >kdb import db.tar.gz
 
-**Ex :**
+**Ex :** 
 Import a database:
 > - kdb import backup.tar.gz
 
 
+Architecture:
+--------------
 
+The db is stored in a directory:
+> .kdb \-\-\- db.json
+>       \|\- 1_python_basics
+>       \|\- 2_sshd_config
+>       \|\- 3_shematics.jpeg
+>       \|\- 4_pep8 -- index.html
+>                   \|\- style.css
+>                   \|\- script.js
+
+Each resource is composed of:
+ - A file (or a folder in the case of a webpage)
+ - A JSON record in the db.json file in the form of:
+>
