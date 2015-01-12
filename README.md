@@ -3,8 +3,8 @@
 
 What is it ?
 --------------
-KDB (Knowledge DataBase) is a lightweight simple solution to store, retrieve and manage knowledge.   
-If one day you said to yourself : "I need to write this command somewhere" or "This configuration file could be usefull someday".
+KDB (Knowledge DataBase) is a lightweight simple solution to store, retrieve and manage knowledges.   
+If one day you said to yourself : "I need to write this command somewhere" or "This configuration file could be usefull someday".  
 Then KDB is for you. 
 
 Commands :
@@ -17,7 +17,7 @@ Commands :
 create a new resource (will open an editor):
  - kdb new -n "New resource"
 
-Import exising file (same result):
+Import exising file:
  - kdb new plop.py -n "python basics" -t python,dev
  - cat plop.py | kdb new -n "python basics" -t python,dev
  - kdb new -n "python basics" -t python,dev < plop.py
@@ -28,11 +28,11 @@ Import webpage:
 Import image:
  - kdb new graph.jpeg -t graph,db
 
-If no tags specified, user will be prompted.
+If no tags specified, user will be prompted.  
 If no name specified, default to filename.  
 
 ### search
->kdb search [-i id] [-t tag1,tag2] [-n name] [-r] [-c creation_date] [-m modification_date] [-a access_date]
+>kdb search [-i id] [-t tag1,tag2] [-n name] [-r] [-c creation_date] [-m modification_date] [-a access_date] [-d]
 
 **Ex :**  
 List all resources tagged python:
@@ -40,6 +40,8 @@ List all resources tagged python:
 
 List all resources with name containing python:
  - kdb search python
+
+List all resources with name containing python regex mode:
  - kdb search -r "/^python/"
 
 List all resources created on 2014 :
@@ -47,6 +49,11 @@ List all resources created on 2014 :
 
 List all resources accessed less than 3 hours ago:
  - kdb search -a 3H  
+ 
+List all *text files* containing the string (deep option):
+ - kdb search -d "/usr/bin/python/"
+
+
 
 ### show
 >kdb show [id] [-n name] [-t tag]
@@ -56,7 +63,7 @@ Show "python basics" resource:
  - kdb show -n "python basics"
  - kdb show 1  
 
- Binaries used to display resources are set in config file (default to cat/firefox/eog).  
+Binaries used to display resources are set in config file (default to cat/firefox/eog).  
 
 ### edit
 >kdb edit [id] [-t tag1,tag2] [-n name]
@@ -69,7 +76,7 @@ Edit the "python basics" resource (works only on type=text):
 Edit the tags of "python basics" resource:
  - kdb edit -n "python basics" -t newtag1,newtag2
 
- Edit the name of "python basics" resource :
+Edit the name of "python basics" resource :
  - kdb edit 1 -n "python basics : conditionals"  
 
 ### rm 
@@ -100,7 +107,7 @@ Pull your database from the configured Git repo:
  - kdb pull   
 
 ### export
->kdb export filename.tar.gz
+>kdb export <path>
 
 **Ex :**  
 Export your database:
@@ -110,7 +117,7 @@ Partial export:
  - kdb search -t python | kdb export python.tar.gz   
 
 ### import
->kdb import db.tar.gz
+>kdb import <path>
 
 **Ex :**   
 Import a database:
@@ -122,7 +129,7 @@ Architecture:
 
 The db is stored in a directory:
 <pre>
-+-- _.kdb
++-- .kdb
 |   +-- config
 |   +-- db.json 
 |   +-- 1_python_basics
@@ -138,4 +145,15 @@ Each resource is composed of:
  - A file (or a folder in the case of a webpage)
  - A JSON record in the db.json file in the form of:
 
-> 
+<pre>
+{
+  "id": "1",
+  "name": "Python Basics",
+  "type": "text",
+  "a_date": "2015-01-12 16:03:44",
+  "m_date": "2015-01-12 16:03:44",
+  "c_date": "2015-01-12 16:03:44",
+  "path": "1_python_basics",
+  "tags": ["python","dev"]
+}
+</pre>
