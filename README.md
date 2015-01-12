@@ -92,7 +92,7 @@ Remove all resources piped from search command:
 ### push
 >kdb push
 
-**Ex :** 
+**Ex :**  
 Push your database on the configured Git repo:
 > - kdb push
 
@@ -101,7 +101,7 @@ Push your database on the configured Git repo:
 ### pull
 >kdb pull
 
-**Ex :** 
+**Ex :**   
 Pull your database from the configured Git repo:
 > - kdb pull
 
@@ -111,7 +111,7 @@ Pull your database from the configured Git repo:
 -------
 >kdb export filename.tar.gz
 
-**Ex :** 
+**Ex :**  
 Export your database:
 > - kdb export backup.tar.gz
 
@@ -124,7 +124,7 @@ Partial export:
 -------
 >kdb import db.tar.gz
 
-**Ex :** 
+**Ex :**   
 Import a database:
 > - kdb import backup.tar.gz
 
