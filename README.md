@@ -93,7 +93,7 @@ Remove all resources piped from search command:
  - kdb search -a 3h | kdb rm  
 
 ### git 
->kdb git <git command>
+>kdb git \<git command\>
 
 **Ex :**  
 Push your database on the configured Git repo:
@@ -103,7 +103,7 @@ Pull your database from the configured Git repo:
  - kdb git pull   
 
 ### export
->kdb export <path>
+>kdb export \<path\>
 
 **Ex :**  
 Export your database:
@@ -113,7 +113,7 @@ Partial export:
  - kdb search -t python | kdb export python.tar.gz   
 
 ### import
->kdb import <path>
+>kdb import \<path\>
 
 **Ex :**   
 Import a database:
