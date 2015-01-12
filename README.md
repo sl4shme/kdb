@@ -92,19 +92,15 @@ Remove all resources tagged Python:
 Remove all resources piped from search command:
  - kdb search -a 3h | kdb rm  
 
-### push
->kdb push
+### git 
+>kdb git <git command>
 
 **Ex :**  
 Push your database on the configured Git repo:
- - kdb push  
-
-### pull
->kdb pull
-
-**Ex :**   
+ - kdb git push  
+  
 Pull your database from the configured Git repo:
- - kdb pull   
+ - kdb git pull   
 
 ### export
 >kdb export <path>
