@@ -11,7 +11,7 @@ Commands :
 --------------
 
 ### new
->kdb new [path of file] [-t tag1,tag2] [-n name]
+>kdb new [path of file] [-t tag1,tag2] [-n name] [-s]
 
 **Ex :**  
 create a new resource (will open an editor):
@@ -30,6 +30,8 @@ Import image:
 
 If no tags specified, user will be prompted.  
 If no name specified, default to filename.  
+
+-s : Sanitize option : Will try to strip off password and ip's before importing.  
 
 ### search
 >kdb search [-i id] [-t tag1,tag2] [-n name] [-r] [-c creation_date] [-m modification_date] [-a access_date] [-d]
