@@ -119,6 +119,31 @@ Partial export:
 Import a database:
  - kdb import backup.tar.gz  
 
+### encrypt
+>kdb encrypt 
+
+**Ex :**   
+Encrypt the full database:
+ - kdb encrypt
+
+Encrypt part of the database:
+ - kdb search -t "perso" | kdb encrypt  
+
+Kdb show will detect encrypted ressource and ask for decryption before opening.
+
+### decrypt
+>kdb decrypt 
+
+**Ex :**   
+Decrypt the full database:
+ - kdb decrypt
+
+Encrypt part of the database:
+ - kdb search -t "perso" | kdb decrypt
+
+
+
+
 
 Architecture:
 --------------
@@ -141,15 +166,16 @@ Each resource is composed of:
  - A file (or a folder in the case of a webpage)
  - A JSON record in the db.json file in the form of:
 
-<pre>
+```JSON
 {
   "id": "1",
   "name": "Python Basics",
   "type": "text",
+  "path": "1_python_basics",
+  "tags": ["python","dev"],
+  "encrypt": "false",
   "a_date": "2015-01-12 16:03:44",
   "m_date": "2015-01-12 16:03:44",
   "c_date": "2015-01-12 16:03:44",
-  "path": "1_python_basics",
-  "tags": ["python","dev"]
 }
-</pre>
+```
