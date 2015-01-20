@@ -3,7 +3,7 @@ import random
 import string
 
 data = []
-for num in range(1, 10):
+for num in range(1, 1000):
     name = ''.join([random.choice(string.ascii_letters + string.digits) for n in range(32)])
     obj = {"id": num,
            "name": name,

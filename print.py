@@ -1,16 +1,25 @@
 import json
+import timeit
 
-# data = []
-
-# with open('data.txt') as f:
-#    for line in f:
-#        jsonl = json.loads(line)
-#        data.append(jsonl)
-#       print(json.dumps(jsonl))
-
-# print(json.dumps(data))
 
 with open('db.json') as f:
     datas = json.load(f)
 
-print(filter(lambda kres: kres['id'] == 1, datas))
+def uselambda (datalist):
+    names = list(filter(lambda kres: "aa" in kres['name'], datalist))
+    return(names)
+
+def usefor(datalist):
+    result=[]
+    for i in datalist:
+        if "aa" in i["name"]:
+            result.append(i)
+    return(result)
+
+print(uselambda(datas))
+print(usefor(datas))
+
+    #ids = list(filter(lambda kres: kres['id'] < 5, datas))
+    #print(ids)
+    #print(len(ids))
+
