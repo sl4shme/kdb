@@ -34,9 +34,16 @@ class Db:
         self.json.append(entry)
         self.writeDb()
 
-    def delEntry(self):
+    def delEntry(self, entries):
         pass
 
-    def findEntry(self, name):
-        result = [item for item in self.json if name in item['name']]
+    def findEntry(self, name="", fileType="", tags=[]):
+        result = self.json
+        if name:
+            result = [item for item in result if name in item['name']]
+        if fileType:
+            result = [item for item in result if fileType in item['type']]
+        if tags:
+            result = [item for item in result if set(tags).issubset(
+                      item['tags'])]
         return(result)
