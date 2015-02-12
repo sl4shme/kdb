@@ -10,6 +10,9 @@ class Db:
     def __init__(self):
         # Add lock
         # Create if not exist
+        self.readDb()
+
+    def readDb(self):
         with open(PATH) as f:
             self.json = json.load(f)
 
@@ -34,10 +37,12 @@ class Db:
         self.json.append(entry)
         self.writeDb()
 
-    def delEntry(self, entries):
-        pass
+    def deleteEntries(self, entries):
+        for entry in entries:
+            self.json.remove(entry)
+        self.writeDb()
 
-    def findEntry(self, name="", fileType="", tags=[]):
+    def findEntries(self, name="", fileType="", tags=[]):
         result = self.json
         if name:
             result = [item for item in result if name in item['name']]
