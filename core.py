@@ -1,5 +1,6 @@
 import shutil
 import os
+import subprocess
 # imports
 import db
 import env
@@ -23,8 +24,10 @@ def get(toSearch={}):
     return db.findEntries(toSearch)
 
 
-def grep(self):
-    # grep -l -r
+def grep():
+    out = subprocess.check_output(["grep", "-l", "-r", "plop",
+                                   "./kdb"]).splitlines()
+    print(out)
     pass
 
 
