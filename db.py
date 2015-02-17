@@ -42,13 +42,13 @@ def deleteEntries(entries):
     writeDb(newJson)
 
 
-def findEntries(name="", fileType="", tags=[]):
+def findEntries(toSearch={}):
     result = readDb()
-    if name:
-        result = [item for item in result if name in item['name']]
-    if fileType:
-        result = [item for item in result if fileType in item['type']]
-    if tags:
-        result = [item for item in result if set(tags).issubset(
+    for searchField in ["name", "path", "type", "uuid"]:
+        if searchField in toSearch:
+            result = [item for item in result if toSearch[searchField]
+                      in item[searchField]]
+    if "tags" in toSearch:
+        result = [item for item in result if set(toSearch["tags"]).issubset(
                   item['tags'])]
     return(result)
