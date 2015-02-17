@@ -4,21 +4,27 @@ import os
 import db
 import env
 
+# remove path => id ou name ?
+
 
 def create(name, path, tags):
-    shutil.copy2(path, env.path.strip("db.json"))
+    shutil.copy2(path, env.path)
     db.addEntry(name, "text", os.path.basename(path), tags)
 
 
-def delete(self):
-     os.remove(path)
+def delete(toSearch):
+    entries = db.findEntries(toSearch)
+    for entry in entries:
+        os.remove(env.path + entry["path"])
+    db.deleteEntries(entries)
 
 
-def search(self):
-    pass
+def get(toSearch={}):
+    return db.findEntries(toSearch)
 
 
 def grep(self):
+    # grep -l -r
     pass
 
 
@@ -43,8 +49,4 @@ def encrypt(self):
 
 
 def decrypt(self):
-    pass
-
-
-def get(self):
     pass

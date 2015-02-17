@@ -6,13 +6,13 @@ import env
 
 
 def readDb():
-    with open(env.path) as f:
+    with open(env.path + "db.json") as f:
         datas = json.load(f)
     return datas
 
 
 def writeDb(newJson):
-    with open(env.path, 'w') as f:
+    with open(env.path + "db.json", 'w') as f:
         json.dump(newJson, f, indent=0)
 
 
