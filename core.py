@@ -24,11 +24,14 @@ def get(toSearch={}):
     return db.findEntries(toSearch)
 
 
-def grep():
-    out = subprocess.check_output(["grep", "-l", "-r", "plop",
-                                   "./kdb"]).splitlines()
-    print(out)
-    pass
+def grep(toGrep):
+    command = ["grep", "-l", "-r", toGrep, env.path, "--exclude=db.json"]
+    output = subprocess.check_output(command).decode("utf-8")
+    result = []
+    for line in output.splitlines():
+        path = os.path.basename(line)
+        result.append(get({"path": path})[0])
+    return result
 
 
 def edit(self):
