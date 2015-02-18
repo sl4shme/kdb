@@ -42,7 +42,7 @@ def deleteEntries(entries):
     writeDb(newJson)
 
 
-def findEntries(toSearch={}):
+def findEntries(**toSearch):
     result = readDb()
     for searchField in ["name", "path", "type", "uuid"]:
         if searchField in toSearch:
