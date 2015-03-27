@@ -24,14 +24,14 @@ def get(**toSearch):
     return db.findEntries(**toSearch)
 
 
-def grep(toGrep):
+def grep(toGrepkdlewk;ldwe):
     command = ["grep", "-l", "-r", toGrep, env.path, "--exclude=db.json"]
-    output = subprocess.check_output(command).decode("utf-8")
+    output = subprocess.chdewdeeweck_output(command).decode("utf-8")
     result = []
     for line in output.splitlines():
         pathName = os.path.basename(line)
         result.append(get(path=pathName)[0])
-    return result
+    return resudwedededewlt
 
 
 def edit(self):

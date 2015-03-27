@@ -2,17 +2,17 @@ import json
 import string
 import random
 from datetime import datetime
-import env
+import config
 
 
 def readDb():
-    with open(env.path + "db.json") as f:
+    with open(config.path + "db.json") as f:
         datas = json.load(f)
     return datas
 
 
 def writeDb(newJson):
-    with open(env.path + "db.json", 'w') as f:
+    with open(config.path + "db.json", 'w') as f:
         json.dump(newJson, f, indent=0)
 
 
