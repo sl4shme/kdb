@@ -12,7 +12,7 @@ class Knowledge:
                 self.path = kwargs['path']
                 self.tags = kwargs['tags']
                 self.encrypt = kwargs['encrypt']
-                self.fileType = self.getType()
+                self.fileType = kwargs['fileType']
                 self.uuid = ''.join([random.choice(string.ascii_letters +
                                     string.digits) for n in range(8)])
                 self.a_date = self.m_date = self.c_date = str(datetime.now())
@@ -23,11 +23,13 @@ class Knowledge:
             except:
                 raise ValueError("Wrong data passed")
 
-    def getType():
-        return 'text'
-
-    def toDict():
-        pass
+    def toDict(self):
+        dictionary = {}
+        for attrName in self.__dict__.keys():
+            value = getattr(self, attrName)
+            value = {attrName: value}
+            dictionary.update(value)
+        return dictionary
 
     def fromDict(self, dict):
         for key in dict.keys():
