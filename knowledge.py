@@ -1,6 +1,7 @@
 import string
 from datetime import datetime
 import random
+import subprocess
 
 
 class Knowledge:
@@ -34,3 +35,11 @@ class Knowledge:
     def fromDict(self, dict):
         for key in dict.keys():
             setattr(self, key, dict[key])
+
+    def getType(self):
+        command = ["file", "-b", "--mime-type", path]
+        result = subprocess.check_output(command).decode("utf-8")
+        result = result.splitlines()[0]
+        return result
+
+    def copyFile(self):
