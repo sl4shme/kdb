@@ -1,0 +1,64 @@
+#!/usr/bin/python
+import argparse
+import kdb
+
+
+def lister(args):
+    db = kdb.Kdb()
+    for k in db.get():
+        print(k)
+
+
+def tags(args):
+    db = kdb.Kdb()
+    r = list(set([i for sublist in db.get() for i in sublist['tags']]))
+    for k in r:
+        print(k)
+
+
+def getter(args):
+    db = kdb.Kdb()
+    print(db.get(name=args.name))
+
+
+def complete(args):
+    db = kdb.Kdb()
+    if args.what == 'names':
+        res = [i['name'] for i in db.get()]
+    elif args.what == 'tags':
+        res = list(set([i for sublist in db.get() for i in sublist['tags']]))
+    elif args.what == 'ids':
+        res = [i['uuid'] for i in db.get()]
+    res.sort()
+    if args.shell == 'bash':
+        print(" ".join(res))
+    elif args.shell == 'zsh':
+        print(",".join(res))
+
+
+# create the top-level parser
+parser = argparse.ArgumentParser()
+subparsers = parser.add_subparsers()
+
+# create the parser for the "list" command
+parser_list = subparsers.add_parser('list')
+parser_list.set_defaults(func=lister)
+
+# create the parser for the "tags" command
+parser_tags = subparsers.add_parser('tags')
+parser_tags.set_defaults(func=tags)
+
+# create the parser for the "complete" command
+parser_comp = subparsers.add_parser('complete')
+parser_comp.add_argument('what')
+parser_comp.add_argument('shell')
+parser_comp.set_defaults(func=complete)
+
+# create the parser for the "get" command
+parser_get = subparsers.add_parser('get')
+parser_get.add_argument('name')
+parser_get.set_defaults(func=getter)
+
+# parse the args and call whatever function was selected
+args = parser.parse_args()
+args.func(args)

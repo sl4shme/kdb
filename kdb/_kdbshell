@@ -1,0 +1,31 @@
+_kdbshell()
+{
+    local cur prev
+
+    cur=${COMP_WORDS[COMP_CWORD]}
+    prev=${COMP_WORDS[COMP_CWORD-1]}
+
+    case ${COMP_CWORD} in
+        1)
+            COMPREPLY=($(compgen -W "list get" ${cur}))
+            ;;
+        2)
+            case ${prev} in
+                list)
+                    COMPREPLY=($(compgen -W "p1 p2 p3" ${cur}))
+                    ;;
+                get)
+                    COMPREPLY=($(compgen -W "`kdbshell compknowledge`" ${cur}))
+                    ;;
+                tags)
+                    COMPREPLY=($(compgen -W "`kdbshell comptag`" ${cur}))
+                    ;;
+            esac
+            ;;
+        *)
+            COMPREPLY=()
+            ;;
+    esac
+}
+
+complete -F _kdbshell kdbshell

@@ -78,7 +78,7 @@ class Kdb:
         entry['tags'] = tags
         entry['uuid'] = ''.join([random.choice(string.ascii_letters +
                                 string.digits) for n in range(8)])
-        self.a_date = self.m_date = self.c_date = str(datetime.now())
+        self.m_date = self.c_date = str(datetime.now())
         if name:
             entry['name'] = name
         else:
@@ -163,7 +163,4 @@ class Kdb:
         pass
 
     def decrypt(self):
-        pass
-
-    def downloadWebPage(self):  # add addblock option
         pass
