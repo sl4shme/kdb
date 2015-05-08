@@ -5,8 +5,7 @@ import kdb
 
 def lister(args):
     db = kdb.Kdb()
-    for k in db.get():
-        print(k)
+    printer(db.get())
 
 
 def tags(args):
@@ -35,6 +34,9 @@ def complete(args):
     elif args.shell == 'zsh':
         print(",".join(res))
 
+
+def create(args):
+    pass
 
 # create the top-level parser
 parser = argparse.ArgumentParser()
