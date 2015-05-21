@@ -1,13 +1,19 @@
-import string
 from datetime import datetime
-import random
-import shutil
 import os
 import re
+import shutil
 import subprocess
 import tinydictdb
 import configparser
 import tempfile
+
+
+def sanitize(toClean):
+    toClean = str(toClean)
+    toClean = toClean.lower()
+    toClean = re.sub("[^a-z0-9.]", "_", toClean)
+    toClean = re.sub("_+", "_", toClean)
+    return toClean
 
 
 class Kdb:
@@ -49,7 +55,7 @@ class Kdb:
                                                 self.config['dbDir']))
         if not os.path.isdir(self.config['dbDir']):
             os.mkdir(self.config['dbDir'])
-        for name in ["text", "web", "other"]:
+        for name in ["text", "other"]:
             name = self.config['dbDir'] + "/" + name
             if not os.path.isdir(name):
                 os.mkdir(name)
@@ -57,7 +63,7 @@ class Kdb:
 
     def __initDb(self):
         dbPath = self.config['dbDir'] + '/db.json'
-        self.db = tinydictdb.TinyDictDb(dbPath)
+        self.db = tinydictdb.TinyDictDb(path=dbPath)
 
     def __getType(self, path):
         if os.path.isfile(path):
@@ -76,8 +82,6 @@ class Kdb:
         entry = {}
         entry['fileType'] = self.__getType(path)
         entry['tags'] = tags
-        entry['uuid'] = ''.join([random.choice(string.ascii_letters +
-                                string.digits) for n in range(8)])
         self.m_date = self.c_date = str(datetime.now())
         if name:
             entry['name'] = name
@@ -85,18 +89,21 @@ class Kdb:
             entry['name'] = path
 
         if entry['fileType'].split('/')[0] == 'text':
-            shutil.copy(path, self.config['dbDir'] + '/text/' + entry['uuid'])
+            shutil.copy(path, '{}/text/{}'.format(self.config['dbDir'],
+                                                  sanitize(entry['name'])))
         elif entry['fileType'] == 'web':
             dlDir = self.dumpWebPage(path)
             shutil.copytree(dlDir.name,
-                            self.config['dbDir'] + '/web/' + entry['uuid'])
-# IF only one file : need to repasser dans le file type
+                            '{}/other/{}'.format(self.config['dbDir'],
+                                                 sanitize(entry['name'])))
             dlDir.cleanup()
         elif entry['fileType'] == 'dir':
             shutil.copytree(path,
-                            self.config['dbDir'] + '/other/' + entry['uuid'])
+                            '{}/other/{}'.format(self.config['dbDir'],
+                                                 sanitize(entry['name'])))
         else:
-            shutil.copy(path, self.config['dbDir'] + '/other/' + entry['uuid'])
+            shutil.copy(path, '{}/other/{}'.format(self.config['dbDir'],
+                                                   sanitize(entry['name'])))
 
         self.db.addEntries(entry)
 
@@ -116,16 +123,16 @@ class Kdb:
         entries = self.db.findEntries(**toSearch)
         for entry in entries:
             if entry['fileType'].split('/')[0] == 'text':
-                fName = self.config['dbDir'] + "/text/" + entry['uuid']
+                fName = "{}/text/{}".format(self.config['dbDir'],
+                                            sanitize(entry['name']))
                 os.remove(fName)
-            elif entry['fileType'] == 'web':
-                fName = self.config['dbDir'] + "/web/" + entry['uuid']
-                shutil.rmtree(fName)
-            elif entry['fileType'] == 'dir':
-                fName = self.config['dbDir'] + "/other/" + entry['uuid']
+            elif entry['fileType'] in ['web', 'dir']:
+                fName = "{}/other/{}".format(self.config['dbDir'],
+                                             sanitize(entry['name']))
                 shutil.rmtree(fName)
             else:
-                fName = self.config['dbDir'] + "/other/" + entry['uuid']
+                fName = "{}/other/{}".format(self.config['dbDir'],
+                                             sanitize(entry['name']))
                 os.remove(fName)
         self.db.deleteEntries(entries)
 
@@ -136,15 +143,16 @@ class Kdb:
         command = ["grep", "-l", "-r", toGrep, self.config['dbDir'],
                    "--exclude=db.json", "--exclude=config"]
         if not large:
-            command.append("--exclude-dir=web")
             command.append("--exclude-dir=other")
         # IF git add exclude git / gitignore
         output = subprocess.check_output(command).decode("utf-8")
         result = []
         for line in output.splitlines():
-            uuid = line.replace(self.config['dbDir'], '')
-            uuid = uuid.split("/")[2]
-            result.append(self.get(uuid=uuid)[0])
+            fileName = line.replace(self.config['dbDir'], '')
+            fileName = fileName.split("/")[2]
+            result.append(self.get(name=(lambda x: True
+                                         if fileName == sanitize(x)
+                                         else False))[0])
         return result
 
     def edit(self):
