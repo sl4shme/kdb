@@ -93,6 +93,11 @@ class Kdb:
                                                   sanitize(entry['name'])))
         elif entry['fileType'] == 'web':
             dlDir = self.dumpWebPage(path)
+            if len(os.listdir(dlDir.name)) == 1:
+                self.create(dlDir.name + "/" + os.listdir(dlDir.name)[0],
+                            tags, name)
+                dlDir.cleanup()
+                return 0
             shutil.copytree(dlDir.name,
                             '{}/other/{}'.format(self.config['dbDir'],
                                                  sanitize(entry['name'])))
@@ -145,15 +150,18 @@ class Kdb:
         if not large:
             command.append("--exclude-dir=other")
         # IF git add exclude git / gitignore
-        output = subprocess.check_output(command).decode("utf-8")
-        result = []
-        for line in output.splitlines():
-            fileName = line.replace(self.config['dbDir'], '')
-            fileName = fileName.split("/")[2]
-            result.append(self.get(name=(lambda x: True
-                                         if fileName == sanitize(x)
-                                         else False))[0])
-        return result
+        try:
+            output = subprocess.check_output(command).decode("utf-8")
+            result = []
+            for line in output.splitlines():
+                fileName = line.replace(self.config['dbDir'], '')
+                fileName = fileName.split("/")[2]
+                result.append(self.get(name=(lambda x: True
+                                             if fileName == sanitize(x)
+                                             else False))[0])
+            return result
+        except:
+            pass
 
     def edit(self):
         pass
