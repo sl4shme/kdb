@@ -8,14 +8,6 @@ import configparser
 import tempfile
 
 
-def sanitize(toClean):
-    toClean = str(toClean)
-    toClean = toClean.lower()
-    toClean = re.sub("[^a-z0-9.]", "_", toClean)
-    toClean = re.sub("_+", "_", toClean)
-    return toClean
-
-
 class Kdb:
     def __init__(self):
         self.__initConfig()
@@ -27,7 +19,7 @@ class Kdb:
         config['DEFAULT'] = {'dbDir': '~/.kdb/',
                              '_text_application': '$EDITOR',
                              '_other_application': '$BROWSER',
-                             '_enable_git': True,
+                             'enable_git': True,
                              '_git_webpage': False,
                              '_git_other': False,
                              '_compress_webpage': False,
@@ -59,7 +51,13 @@ class Kdb:
             name = self.config['dbDir'] + "/" + name
             if not os.path.isdir(name):
                 os.mkdir(name)
-        # if git : add .gitignore and git init
+        if self.config['enable_git'].lower() in ['true', '1', 'yes']:
+            if self.gitWrapper(['status']) == 128:
+                self.gitWrapper(['init'])
+                with open(self.config['dbDir'] + '/.gitingnore', 'w') as f:
+                    f.write("other/")
+                self.gitWrapper(['add', '--all'])
+                self.gitWrapper(['commit', '-a', '-m', '"Initial commit"'])
 
     def __initDb(self):
         dbPath = self.config['dbDir'] + '/db.json'
@@ -78,6 +76,22 @@ class Kdb:
             raise ValueError("The path provided is invalid.")
         return result
 
+    def gitWrapper(self, command=[]):
+        gitDir = self.config['dbDir'] + "/.git"
+        finalCommand = ['git', '--git-dir={}'.format(gitDir),
+                        '--work-tree={}'.format(self.config['dbDir'])]
+        finalCommand.extend(command)
+        code = subprocess.call(finalCommand, stdout=subprocess.DEVNULL,
+                               stderr=subprocess.DEVNULL)
+        return code
+
+    def sanitize(self, toClean):
+        toClean = str(toClean)
+        toClean = toClean.lower()
+        toClean = re.sub("[^a-z0-9.]", "_", toClean)
+        toClean = re.sub("_+", "_", toClean)
+        return toClean
+
     def create(self, path, tags=[], name=""):
         entry = {}
         entry['fileType'] = self.__getType(path)
@@ -89,8 +103,9 @@ class Kdb:
             entry['name'] = path
 
         if entry['fileType'].split('/')[0] == 'text':
-            shutil.copy(path, '{}/text/{}'.format(self.config['dbDir'],
-                                                  sanitize(entry['name'])))
+            shutil.copy(path,
+                        '{}/text/{}'.format(self.config['dbDir'],
+                                            self.sanitize(entry['name'])))
         elif entry['fileType'] == 'web':
             dlDir = self.dumpWebPage(path)
             if len(os.listdir(dlDir.name)) == 1:
@@ -100,17 +115,22 @@ class Kdb:
                 return 0
             shutil.copytree(dlDir.name,
                             '{}/other/{}'.format(self.config['dbDir'],
-                                                 sanitize(entry['name'])))
+                                                 self.sanitize(entry['name'])))
             dlDir.cleanup()
         elif entry['fileType'] == 'dir':
             shutil.copytree(path,
                             '{}/other/{}'.format(self.config['dbDir'],
-                                                 sanitize(entry['name'])))
+                                                 self.sanitize(entry['name'])))
         else:
-            shutil.copy(path, '{}/other/{}'.format(self.config['dbDir'],
-                                                   sanitize(entry['name'])))
+            shutil.copy(path,
+                        '{}/other/{}'.format(self.config['dbDir'],
+                                             self.sanitize(entry['name'])))
 
         self.db.addEntries(entry)
+        if self.config['enable_git'].lower() in ['true', '1', 'yes']:
+            self.gitWrapper(['add', '--all'])
+            self.gitWrapper(['commit', '-a', '-m',
+                             '"Added {}"'.format(entry['name'])])
 
     def dumpWebPage(self, url):
             td = tempfile.TemporaryDirectory()
@@ -129,17 +149,22 @@ class Kdb:
         for entry in entries:
             if entry['fileType'].split('/')[0] == 'text':
                 fName = "{}/text/{}".format(self.config['dbDir'],
-                                            sanitize(entry['name']))
+                                            self.sanitize(entry['name']))
                 os.remove(fName)
             elif entry['fileType'] in ['web', 'dir']:
                 fName = "{}/other/{}".format(self.config['dbDir'],
-                                             sanitize(entry['name']))
+                                             self.sanitize(entry['name']))
                 shutil.rmtree(fName)
             else:
                 fName = "{}/other/{}".format(self.config['dbDir'],
-                                             sanitize(entry['name']))
+                                             self.sanitize(entry['name']))
                 os.remove(fName)
         self.db.deleteEntries(entries)
+        if self.config['enable_git'].lower() in ['true', '1', 'yes']:
+            self.gitWrapper(['add', '--all'])
+            self.gitWrapper(['commit', '-a', '-m',
+                             '"Removed {}"'.format(str([i.get('name')
+                                                        for i in entries]))])
 
     def get(self, **toSearch):
         return self.db.findEntries(**toSearch)
@@ -149,7 +174,9 @@ class Kdb:
                    "--exclude=db.json", "--exclude=config"]
         if not large:
             command.append("--exclude-dir=other")
-        # IF git add exclude git / gitignore
+        if self.config['enable_git'].lower() in ['true', '1', 'yes']:
+            command.append("--exclude-dir=.git")
+            command.append("--exclude=.gitignore")
         try:
             output = subprocess.check_output(command).decode("utf-8")
             result = []
@@ -157,16 +184,13 @@ class Kdb:
                 fileName = line.replace(self.config['dbDir'], '')
                 fileName = fileName.split("/")[2]
                 result.append(self.get(name=(lambda x: True
-                                             if fileName == sanitize(x)
+                                             if fileName == self.sanitize(x)
                                              else False))[0])
             return result
         except:
             pass
 
     def edit(self):
-        pass
-
-    def git(self):
         pass
 
     def exportBkup(self):
