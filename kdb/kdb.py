@@ -6,6 +6,7 @@ import subprocess
 import tinydictdb
 import configparser
 import tempfile
+import tarfile
 
 
 class Kdb:
@@ -193,14 +194,63 @@ class Kdb:
     def edit(self):
         pass
 
-    def exportBkup(self):
-        pass
+    def getPath(self, entry):
+        if entry['fileType'].split('/')[0] == 'text':
+            path = '/text/'
+            copyType = 'file'
+        elif entry['fileType'] in ['web', 'dir']:
+            path = '/other/'
+            copyType = 'folder'
+        else:
+            path = '/other/'
+            copyType = 'file'
+        path += self.sanitize(entry['name'])
+        return path, copyType
 
-    def importBkup(self):
-        pass
+    def exportBkup(self, output, **toSearch):
+        entries = self.get(**toSearch)
+        td = tempfile.TemporaryDirectory()
+        os.mkdir(td.name + "/other")
+        os.mkdir(td.name + "/text")
+        for entry in entries:
+            path, copyType = self.getPath(entry)
+            if copyType == "file":
+                shutil.copy(self.config['dbDir'] + path, td.name + path)
+            else:
+                shutil.copytree(self.config['dbDir'] + path, td.name + path)
+        db = tinydictdb.TinyDictDb(path='{}/db.json'.format(td.name))
+        db.addEntries(entries)
+        if output.find('.tar.gz') == -1:
+            output += '.tar.gz'
+        with tarfile.open(name=output, mode='w:gz') as tar:
+            tar.add(name='{}/db.json'.format(td.name), arcname="db.json")
+            tar.add(name='{}/text'.format(td.name), arcname="text",
+                    recursive=True)
+            tar.add(name='{}/other'.format(td.name), arcname="other",
+                    recursive=True)
+        td.cleanup()
 
-    def encrypt(self):
-        pass
+    def importBkup(self, backupFile):
+        td = tempfile.TemporaryDirectory()
+        with tarfile.open(name=backupFile) as tar:
+            tar.extractall(td.name)
+        superCopy(td.name + '/other', self.config['dbDir'] + '/other')
+        superCopy(td.name + '/text', self.config['dbDir'] + '/text')
+        db = tinydictdb.TinyDictDb(path="{}/db.json".format(td.name))
+        importedEntries = db.findEntries()
+        self.db.addEntries(importedEntries)
+        if self.config['enable_git'].lower() in ['true', '1', 'yes']:
+            self.gitWrapper(['add', '--all'])
+            self.gitWrapper(['commit', '-a', '-m',
+                             '"Imported {}"'.format(str(
+                                 [i.get('name') for i in importedEntries]))])
 
-    def decrypt(self):
-        pass
+
+def superCopy(src, dst):
+    for item in os.listdir(src):
+        s = os.path.join(src, item)
+        d = os.path.join(dst, item)
+        if os.path.isdir(s):
+            shutil.copytree(s, d, symlinks=False, ignore=None)
+        else:
+            shutil.copy2(s, d)
